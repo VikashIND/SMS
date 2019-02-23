@@ -1,0 +1,32 @@
+﻿@model SMS.Models.EmployeeMaster
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login Area</h2>
+@using (Html.BeginForm("Login", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+<div class="center-block" style="width:300px;height:150px;border-color:orangered;border:solid 1px red; background-color:azure">
+    <div class="form-group">
+        <fieldset>
+            <legend>Enter Login Details</legend>
+
+            <table>
+                <tr>
+                    <td><label>Login ID : </label></td>
+                    <td>@Html.TextBoxFor(model => model.LoginID, new { htmlAttributes = new { @class = "form-control" } })</td>
+                </tr>
+                <tr>
+                    <td><label>Password : </label></td>
+                    <td>@Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })</td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="right" style="padding-top:10px"><input type="submit" value="Login" id="submit" /></td>
+                </tr>
+            </table>
+        </fieldset>
+        </div>
+    </div>
+}

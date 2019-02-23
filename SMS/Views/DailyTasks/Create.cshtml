@@ -1,0 +1,229 @@
+﻿@model SMS.Models.DailyTask
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>DailyTask</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-4">
+                <label>Client Name</label>
+              
+                @Html.HiddenFor(model => model.ClientID);
+                @Html.EditorFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label>Select Category</label>
+                @Html.DropDownListFor(model => model.CategoryID, new SelectList(ViewBag.CategoryList, "ID", "Name"), "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label>Current Status</label>
+                @Html.DropDownListFor(model => model.StatusID, new SelectList(ViewBag.StatusList, "ID", "Name"), "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StatusID, "", new { @class = "text-danger" })
+            </div>
+
+            
+
+
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <label>Description</label>
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+
+            </div>
+            <div class="col-md-4">
+                <label>Notes</label>
+                @Html.EditorFor(model => model.Notes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+                <label>Support Team</label>
+                @Html.DropDownListFor(modle => modle.SupportTeam, new SelectListItem[] { new SelectListItem() { Text = "LIS", Value = "LIS" }, new SelectListItem() { Text = "HIS", Value = "HIS" }, }, new { @class = "form-control" })
+                @*@Html.EditorFor(model => model.SupportTeam, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.SupportTeam, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <label>Current Date</label>
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control datetimepicker " } })
+
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label> Assigned Date</label>
+                @Html.EditorFor(model => model.AssignedDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AssignedDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+
+                <label>Delivery Date</label>
+                @Html.EditorFor(model => model.DeliveryDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DeliveryDate, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <div class="col-md-4">
+                <label>Assigned By</label>
+                @Html.EditorFor(model => model.AssignedBy, new { htmlAttributes = new { @class = "form-control datetimepicker " } })
+
+                @Html.ValidationMessageFor(model => model.AssignedBy, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-4">
+                <label>Re-Assigned By</label>
+                @Html.EditorFor(model => model.ReAssignedBy, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ReAssignedBy, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-4">
+
+                <label>Reffered From</label>
+                @Html.EditorFor(model => model.RefferredFrom, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RefferredFrom, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-0 col-md-12">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/moment.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script>
+        $(function () {
+            $('#ClientName').focus();
+            var d = new Date();
+            var CurrentDate = d.toLocaleDateString();
+            $("#Date").val(CurrentDate);
+            $("#DeliveryDate").val(CurrentDate);
+            $("#AssignedDate").val(CurrentDate);
+            $("#Date").datepicker();
+            $("#DeliveryDate").datepicker();
+            $("#AssignedDate").datepicker();
+
+
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#ClientName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "GetCientListByName",
+                        type: "POST", dataType: "json",
+                        data: { name: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.ClientName,
+                                    ID: item.ID
+                                };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    //$('#ClientName').val(ui.item.label.ClientName);
+                    $('#ClientID').val($.parseJSON(ui.item.ID));
+                   // alert($('#ClientID').val($.parseJSON(ui.item.ID)));
+                },
+                // messages: { noResults: "", results: "" }
+            });
+            function SearchEmployee(request,response) {
+
+            }
+            $("#AssignedBy").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "GetEmployeeByName",
+                        type: "POST",
+                        dataType: "json",
+                        data: { search: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name};
+                            }))
+
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+            $("#ReAssignedBy").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "GetEmployeeByName",
+                        type: "POST",
+                        dataType: "json",
+                        data: { search: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name };
+                            }))
+
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+            $("#RefferredFrom").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "GetEmployeeByName",
+                        type: "POST",
+                        dataType: "json",
+                        data: { search: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Name };
+                            }))
+
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        });
+       
+    </script>
+
+}
